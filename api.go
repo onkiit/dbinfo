@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/globalsign/mgo"
+	"github.com/gomodule/redigo/redis"
 )
 
 type Store interface {
@@ -16,6 +17,7 @@ type Store interface {
 type Conn struct {
 	Session *mgo.Session
 	DB      *sql.DB
+	Con     redis.Conn
 }
 
 type DBVersion struct {

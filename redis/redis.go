@@ -14,7 +14,7 @@ type redis struct {
 	con redigo.Conn
 }
 
-func (r *redis) GetVersion(ctx context.Context) (*dbinfo.DBVersion, error) {
+func (r redis) GetVersion(ctx context.Context) (*dbinfo.DBVersion, error) {
 	info, err := redigo.String(r.con.Do("INFO", "SERVER"))
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (r *redis) GetVersion(ctx context.Context) (*dbinfo.DBVersion, error) {
 	return res, nil
 }
 
-func (r *redis) GetActiveClient(ctx context.Context) (*dbinfo.DBActiveClient, error) {
+func (r redis) GetActiveClient(ctx context.Context) (*dbinfo.DBActiveClient, error) {
 	info, err := redigo.String(r.con.Do("INFO", "CLIENTS"))
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (r *redis) GetActiveClient(ctx context.Context) (*dbinfo.DBActiveClient, er
 	return res, nil
 }
 
-func (r *redis) GetHealth(ctx context.Context) (*dbinfo.DBHealth, error) {
+func (r redis) GetHealth(ctx context.Context) (*dbinfo.DBHealth, error) {
 	defer r.con.Close()
 	size, err := redigo.Int(r.con.Do("DBSIZE"))
 	if err != nil {
@@ -122,4 +122,8 @@ func (r *redis) GetHealth(ctx context.Context) (*dbinfo.DBHealth, error) {
 		},
 	}
 	return res, nil
+}
+
+func New(con *dbinfo.Conn) dbinfo.Store {
+	return redis{con: con.Con}
 }
