@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/gocql/gocql"
+
 	"github.com/globalsign/mgo"
 	"github.com/gomodule/redigo/redis"
 )
@@ -15,9 +17,10 @@ type Store interface {
 }
 
 type Conn struct {
-	Session *mgo.Session
-	DB      *sql.DB
-	Con     redis.Conn
+	Session    *mgo.Session
+	DB         *sql.DB
+	Con        redis.Conn
+	CQLSession *gocql.Session
 }
 
 type DBVersion struct {
@@ -29,9 +32,10 @@ type DBActiveClient struct {
 }
 
 type DBHealth struct {
-	PsqlHealth  PsqlHealth  `json:"psql_health,omitempty"`
-	RedisHealth RedisHealth `json:"redis_health,omitempty"`
-	MongoHealth MongoHealth `json:"mongo_health,omitempty"`
+	PsqlHealth      PsqlHealth      `json:"psql_health,omitempty"`
+	RedisHealth     RedisHealth     `json:"redis_health,omitempty"`
+	MongoHealth     MongoHealth     `json:"mongo_health,omitempty"`
+	CassandraHealth CassandraHealth `json:"cassandra_health,omitempty"`
 }
 
 type PsqlHealth struct {
@@ -74,4 +78,14 @@ type MongoHealth struct {
 	StorageSize         float64 `json:"storage_size,omitempty"`
 	Indexes             int     `json:"indexes,omitempty"`
 	DataSize            float64 `json:"data_size,omitempty"`
+}
+
+type CassandraHealth struct {
+	ID              string `json:"id"`
+	GossipActive    string `json:"gossip"`
+	ThriftActive    string `json:"thrift"`
+	NativeTransport string `json:"native"`
+	Load            string `json:"load"`
+	GenerationNo    string `json:"gen_number"`
+	Uptime          string `json:"uptime"`
 }
