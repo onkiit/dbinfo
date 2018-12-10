@@ -20,8 +20,6 @@ func (r redis) GetVersion(ctx context.Context) (*dbinfo.DBVersion, error) {
 		return nil, err
 	}
 
-	defer r.con.Close()
-
 	strVersion, err := getString(info, "redis_version")
 	if err != nil {
 		return nil, err
@@ -55,8 +53,6 @@ func (r redis) GetActiveClient(ctx context.Context) (*dbinfo.DBActiveClient, err
 	if err != nil {
 		return nil, err
 	}
-
-	defer r.con.Close()
 
 	str, err := getString(info, "connected_clients")
 	if err != nil {
