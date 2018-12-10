@@ -34,7 +34,6 @@ func (s *sqlitedb) GetHealth(ctx context.Context) (*dbinfo.DBHealth, error) {
 	if err := s.db.QueryRow("select page_size as pageSize, page_count as pageCount from pragma_page_size, pragma_page_count;").Scan(&pageSize, &pageCount); err != nil {
 		return nil, err
 	}
-	fmt.Printf("health_status: \n pragma_page_size: %d\n pragma_page_count: %d\n", pageSize, pageCount)
 
 	res := &dbinfo.DBHealth{
 		SQLiteHealth: dbinfo.SQLiteHealth{
