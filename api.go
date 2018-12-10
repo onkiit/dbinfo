@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/boltdb/bolt"
 	"github.com/gocql/gocql"
 
 	"github.com/globalsign/mgo"
@@ -21,6 +22,7 @@ type Conn struct {
 	DB         *sql.DB
 	Con        redis.Conn
 	CQLSession *gocql.Session
+	BoltDB     *bolt.DB
 }
 
 type DBVersion struct {
@@ -36,6 +38,8 @@ type DBHealth struct {
 	RedisHealth     RedisHealth     `json:"redis_health,omitempty"`
 	MongoHealth     MongoHealth     `json:"mongo_health,omitempty"`
 	CassandraHealth CassandraHealth `json:"cassandra_health,omitempty"`
+	BoltHealth      BoltHealth      `json:"bolt_health,omitempty"`
+	SQLiteHealth    SQLiteHealth    `json:"sqlite_health,omitempty"`
 }
 
 type PsqlHealth struct {
@@ -81,11 +85,21 @@ type MongoHealth struct {
 }
 
 type CassandraHealth struct {
-	ID              string `json:"id"`
-	GossipActive    string `json:"gossip"`
-	ThriftActive    string `json:"thrift"`
-	NativeTransport string `json:"native"`
-	Load            string `json:"load"`
-	GenerationNo    string `json:"gen_number"`
-	Uptime          string `json:"uptime"`
+	ID              string `json:"id,omitempty"`
+	GossipActive    string `json:"gossip,omitempty"`
+	ThriftActive    string `json:"thrift,omitempty"`
+	NativeTransport string `json:"native,omitempty"`
+	Load            string `json:"load,omitempty"`
+	GenerationNo    string `json:"gen_number,omitempty"`
+	Uptime          string `json:"uptime,omitempty"`
+}
+
+type BoltHealth struct {
+	NumberOfBucket int `json:"number_of_bucket,omitempty"`
+	NumberOfKey    int `json:"number_of_key,omitempty"`
+}
+
+type SQLiteHealth struct {
+	PragmaPageSize  int `json:"page_size,omitempty"`
+	PragmaPageCount int `json:"page_count,omitempty"`
 }
